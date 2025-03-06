@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploring the Galaxy</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        :root {
+            --primary-color: #6d28d9;
+            --primary-light: #8b5cf6;
+            --primary-dark: #5b21b6;
+            --secondary-color: #1e1b4b;
+            --accent-color: #ec4899;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --bg-color: #0f172a;
+            --bg-darker: #020617;
+            --bg-lighter: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(139, 92, 246, 0.3);
+            --fact-bg: rgba(15, 23, 42, 0.7);
+            --header-text: #f8fafc;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        .light-mode {
+            --primary-color: #6d28d9;
+            --primary-light: #8b5cf6;
+            --primary-dark: #5b21b6;
+            --secondary-color: #1e1b4b;
+            --accent-color: #ec4899;
+            --text-color: #0f172a;
+            --text-muted: #475569;
+            --bg-color: #f8fafc;
+            --bg-darker: #e2e8f0;
+            --bg-lighter: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: rgba(139, 92, 246, 0.2);
+            --fact-bg: rgba(241, 245, 249, 0.9);
+            --header-text: #f8fafc;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image:
+                    radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 30%),
+                    radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.1) 0%, transparent 30%);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        #stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-dark));
+            color: var(--header-text);
+            border-radius: 20px;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cosmic-dust {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop') center/cover;
+            opacity: 0.2;
+            mix-blend-mode: screen;
+            z-index: 1;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, var(--primary-light), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        h2 {
+            color: var(--primary-light);
+            font-size: 2.5rem;
+            margin-top: 60px;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-light), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        h3 {
+            color: var(--primary-light);
+            font-size: 1.75rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+            color: var(--text-color);
+            font-weight: 300;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+        }
+
+        .galaxy-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .galaxy-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow:
+                    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+                    0 0 0 1px var(--card-border) inset;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            position: relative;
+        }
+
+        .galaxy-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(139, 92, 246, 0.05), transparent);
+            transform: translateY(100%);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .galaxy-card:hover {
+            transform: translateY(-10px);
+            box-shadow:
+                    0 20px 30px -10px rgba(0, 0, 0, 0.2),
+                    0 0 0 1px var(--primary-light) inset;
+        }
+
+        .galaxy-card:hover::before {
+            transform: translateY(0);
+        }
+
+        .galaxy-image-container {
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            height: 220px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .galaxy-image-container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 70%, rgba(0, 0, 0, 0.7));
+            pointer-events: none;
+        }
+
+        .galaxy-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .galaxy-card:hover .galaxy-image {
+            transform: scale(1.1);
+        }
+
+        .fact-box {
+            background-color: var(--fact-bg);
+            border-left: 4px solid var(--primary-light);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 0 16px 16px 0;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .fact-box::before {
+            content: "!";
+            position: absolute;
+            left: -14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(to bottom, var(--primary-light), var(--primary-dark));
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-dark));
+            color: white;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--primary-light), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow:
+                    0 10px 15px -3px rgba(0, 0, 0, 0.2),
+                    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mode-toggle:hover {
+            transform: rotate(30deg) scale(1.1);
+            box-shadow:
+                    0 20px 25px -5px rgba(0, 0, 0, 0.3),
+                    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+        }
+
+        .hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quiz-container {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow:
+                    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+                    0 0 0 1px var(--card-border) inset;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+            color: var(--primary-light);
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .quiz-option {
+            background-color: var(--fact-bg);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--card-border);
+            font-weight: 500;
+        }
+
+        .quiz-option:hover {
+            background-color: var(--primary-dark);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-option.correct {
+            background-color: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .quiz-option.incorrect {
+            background-color: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+
+        .quiz-result {
+            margin-top: 25px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1rem;
+            padding: 15px;
+            border-radius: 12px;
+            background-color: var(--fact-bg);
+        }
+
+        .next-question {
+            background: linear-gradient(to right, var(--primary-light), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-top: 25px;
+            cursor: pointer;
+            display: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .next-question:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .next-question.visible {
+            display: block;
+        }
+
+        .galaxy-explorer {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background-color: var(--bg-darker);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 40px 0;
+            box-shadow:
+                    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                    0 0 0 1px var(--card-border) inset;
+        }
+
+        .galaxy-explorer canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .explorer-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .explorer-control {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-weight: 500;
+        }
+
+        .explorer-control:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .galaxy-container {
+                grid-template-columns: 1fr;
+            }
+
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+
+            .mode-toggle {
+                width: 48px;
+                height: 48px;
+                font-size: 1.2rem;
+            }
+
+            .explorer-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation */
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 20px;
+            z-index: 90;
+            padding: 10px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 100px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow:
+                    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .light-mode .nav-menu {
+            background: rgba(241, 245, 249, 0.8);
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 100px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-light), var(--primary-dark));
+            border-radius: 100px;
+            z-index: -1;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .nav-link:hover::before {
+            transform: translateY(0);
+        }
+
+        /* Progress bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 100;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-light), var(--accent-color));
+            width: 0%;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+            border-radius: 6px;
+            border: 3px solid var(--bg-darker);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        /* List styling */
+        ul {
+            list-style-type: none;
+            margin: 0 0 1.5rem 0;
+            padding: 0;
+        }
+
+        ul li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        ul li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.6rem;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-light);
+            border-radius: 50%;
+        }
+
+        /* Button glow effect */
+        @keyframes button-glow {
+            0% {
+                box-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
+            }
+        }
+
+        .next-question.visible {
+            animation: button-glow 2s infinite;
+        }
+
+        /* Shooting star animation */
+        @keyframes shooting-star {
+            0% {
+                transform: translateX(0) translateY(0) rotate(45deg);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px)) translateY(calc(100vh + 100px)) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        .shooting-star {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, white);
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px white;
+            z-index: -1;
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div id="stars-container"></div>
+
+<button class="mode-toggle" id="modeToggle">🌙</button>
+
+<div class="content-wrapper">
+    <header>
+        <div class="cosmic-dust"></div>
+        <div class="header-content">
+            <h1>Exploring the Galaxy</h1>
+            <p>Journey through the cosmic wonders of our universe</p>
+        </div>
+    </header>
+
+    <nav class="nav-menu">
+        <a href="#intro" class="nav-link">Introduction</a>
+        <a href="#what-is" class="nav-link">What is a Galaxy</a>
+        <a href="#types" class="nav-link">Galaxy Types</a>
+        <a href="#components" class="nav-link">Components</a>
+        <a href="#formation" class="nav-link">Formation</a>
+        <a href="#explorer" class="nav-link">Galaxy Explorer</a>
+        <a href="#quiz" class="nav-link">Cosmic Quiz</a>
+    </nav>
+
+    <main>
+        <section id="intro" class="intro hidden">
+            <p>Galaxies are vast cosmic systems composed of stars, stellar remnants, interstellar gas, dust, dark matter, and more, all bound together by gravity. Our own Milky Way is just one of billions of galaxies in the observable universe.</p>
+        </section>
+
+        <section id="what-is" class="hidden">
+            <h2>What is a Galaxy?</h2>
+            <p>A galaxy is a gravitationally bound system consisting of stars, stellar remnants, interstellar gas, dust, dark matter, and possibly unseen forms of matter. The word galaxy is derived from the Greek word for "milky," a reference to our own galaxy, the Milky Way.</p>
+
+            <div class="fact-box">
+                <p><strong>Did you know?</strong> The Milky Way contains between 100-400 billion stars and is approximately 100,000 light-years in diameter.</p>
+            </div>
+
+            <p>Galaxies range in size from dwarfs with just a few hundred million stars to giants with one hundred trillion stars, each orbiting its galaxy's center of mass. Most galaxies are organized into distinct shapes that allow for classification: spiral, elliptical, and irregular.</p>
+        </section>
+
+        <section id="types" class="hidden">
+            <h2>Types of Galaxies</h2>
+
+            <div class="galaxy-container">
+                <div class="galaxy-card">
+                    <h3>Spiral Galaxies</h3>
+                    <div class="galaxy-image-container">
+                        <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2022&auto=format&fit=crop" alt="Spiral Galaxy" class="galaxy-image">
+                    </div>
+                    <p>Spiral galaxies consist of a flat, rotating disk of stars, gas, and dust, along with a central concentration of stars known as the bulge. These are surrounded by a much fainter halo of stars, many of which reside in globular clusters.</p>
+                    <p>Examples: Milky Way, Andromeda Galaxy (M31)</p>
+                </div>
+
+                <div class="galaxy-card">
+                    <h3>Elliptical Galaxies</h3>
+                    <div class="galaxy-image-container">
+                        <img src="https://images.unsplash.com/photo-1614642264762-d0a3b8bf3700?q=80&w=2070&auto=format&fit=crop" alt="Elliptical Galaxy" class="galaxy-image">
+                    </div>
+                    <p>Elliptical galaxies have smooth, featureless light distributions and appear as ellipses in images. They are generally composed of older, redder stars, and contain little interstellar matter. They vary greatly in both size and mass.</p>
+                    <p>Examples: M87, M49</p>
+                </div>
+
+                <div class="galaxy-card">
+                    <h3>Irregular Galaxies</h3>
+                    <div class="galaxy-image-container">
+                        <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?q=80&w=2074&auto=format&fit=crop" alt="Irregular Galaxy" class="galaxy-image">
+                    </div>
+                    <p>Irregular galaxies have no definite structure or shape. They are often chaotic in appearance, with neither spiral nor elliptical features. Many irregular galaxies were once spiral or elliptical galaxies that were deformed by gravitational interaction.</p>
+                    <p>Examples: Large Magellanic Cloud, Small Magellanic Cloud</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="components" class="hidden">
+            <h2>Components of Galaxies</h2>
+
+            <h3>Stars</h3>
+            <p>Stars are the most visible component of galaxies. They vary in size, mass, temperature, and age. Stars are born in nebulae, live for millions to billions of years, and eventually die, sometimes in spectacular explosions called supernovae.</p>
+
+            <h3>Interstellar Medium</h3>
+            <p>The space between stars is not empty but filled with gas and dust, collectively known as the interstellar medium (ISM). This material is crucial for star formation and makes up about 10-15% of the visible matter in our galaxy.</p>
+
+            <h3>Dark Matter</h3>
+            <p>Dark matter is an invisible form of matter that doesn't interact with the electromagnetic force but would still have gravitational effects on ordinary matter. Dark matter makes up about 85% of the total matter in the universe and about 27% of its total mass-energy.</p>
+
+            <div class="fact-box">
+                <p><strong>Cosmic Mystery:</strong> Despite making up most of a galaxy's mass, dark matter has never been directly observed and is one of the biggest mysteries in modern astrophysics.</p>
+            </div>
+
+            <h3>Black Holes</h3>
+            <p>Most, if not all, large galaxies contain a supermassive black hole at their center. These black holes can have masses millions or billions of times that of our Sun. The Milky Way's central black hole, Sagittarius A*, has a mass of about 4 million solar masses.</p>
+
+            <h3>Globular Clusters</h3>
+            <p>Globular clusters are spherical collections of stars that orbit a galactic core. They are very tightly bound by gravity, giving them their spherical shapes and relatively high stellar densities toward their centers.</p>
+        </section>
+
+        <section id="formation" class="hidden">
+            <h2>Galaxy Formation and Evolution</h2>
+            <p>Galaxies form and evolve through a complex interplay of gravity, dark matter, and the physics of gas dynamics. The current model suggests that galaxies began as small density fluctuations in the early universe, which grew through gravitational attraction, drawing in gas that eventually formed stars.</p  which grew through gravitational attraction, drawing in gas that eventually formed stars.</p>
+
+            <p>Galaxies continue to evolve through:</p>
+            <ul>
+                <li><strong>Mergers:</strong> When galaxies collide and combine</li>
+                <li><strong>Star formation:</strong> Creating new stars from interstellar gas</li>
+                <li><strong>Supernovae:</strong> Explosive deaths of massive stars that enrich the galaxy with heavy elements</li>
+                <li><strong>Active galactic nuclei:</strong> Periods when the central black hole actively consumes matter</li>
+            </ul>
+
+            <div class="fact-box">
+                <p><strong>Future Event:</strong> Our Milky Way is on a collision course with the Andromeda Galaxy. In about 4.5 billion years, the two galaxies will merge to form a new, larger galaxy sometimes referred to as "Milkomeda."</p>
+            </div>
+        </section>
+
+        <section id="explorer" class="hidden">
+            <h2>Interactive Galaxy Explorer</h2>
+            <p>Use the controls below to navigate through our virtual galaxy simulation. Zoom in to explore star clusters or zoom out to see the galaxy structure.</p>
+
+            <div class="galaxy-explorer">
+                <canvas id="galaxyCanvas"></canvas>
+                <div class="explorer-controls">
+                    <button class="explorer-control" id="zoomIn">Zoom In</button>
+                    <button class="explorer-control" id="zoomOut">Zoom Out</button>
+                    <button class="explorer-control" id="rotate">Rotate</button>
+                    <button class="explorer-control" id="reset">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="hidden">
+            <h2>Cosmic Quiz</h2>
+            <p>Test your knowledge about galaxies with this interactive quiz!</p>
+
+            <div class="quiz-container">
+                <div id="quizContent">
+                    <!-- Quiz content will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Abdelmalek Youssef | Created for educational purposes</p>
+        <p>Images courtesy of Unsplash</p>
+    </footer>
+</div>
+
+<script>
+    // Dark mode toggle
+    const modeToggle = document.getElementById('modeToggle');
+    const body = document.body;
+
+    modeToggle.addEventListener('click', function() {
+        body.classList.toggle('light-mode');
+        if (body.classList.contains('light-mode')) {
+            this.textContent = '☀️';
+        } else {
+            this.textContent = '🌙';
+        }
+    });
+
+    // Scroll animation
+    const hiddenElements = document.querySelectorAll('.hidden');
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    hiddenElements.forEach(element => {
+        observer.observe(element);
+    });
+
+    // Progress bar
+    window.onscroll = function() {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById("progressBar").style.width = scrolled + "%";
+    };
+
+    // Star background
+    function createStars() {
+        const starsContainer = document.getElementById('stars-container');
+        const starCount = 300;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+
+            // Random position
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+
+            // Random size
+            const size = Math.random() * 3;
+
+            // Random opacity
+            const opacity = Math.random() * 0.8 + 0.2;
+
+            star.style.cssText = `
+                    top: ${y}%;
+                    left: ${x}%;
+                    width: ${size}px;
+                    height: ${size}px;
+                    opacity: ${opacity};
+                    animation: twinkle ${Math.random() * 5 + 2}s infinite alternate;
+                `;
+
+            starsContainer.appendChild(star);
+        }
+
+        // Add CSS animation for twinkling
+        const style = document.createElement('style');
+        style.textContent = `
+                @keyframes twinkle {
+                    0% { opacity: 0.2; transform: scale(0.8); }
+                    100% { opacity: 1; transform: scale(1.2); }
+                }
+            `;
+        document.head.appendChild(style);
+
+        // Create shooting stars
+        createShootingStars();
+    }
+
+    function createShootingStars() {
+        const container = document.body;
+
+        setInterval(() => {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+
+            // Random starting position
+            const startX = Math.random() * -100;
+            const startY = Math.random() * -100;
+
+            shootingStar.style.cssText = `
+                    top: ${startY}px;
+                    left: ${startX}px;
+                    animation: shooting-star ${Math.random() * 3 + 2}s linear forwards;
+                `;
+
+            container.appendChild(shootingStar);
+
+            // Remove after animation completes
+            setTimeout(() => {
+                shootingStar.remove();
+            }, 5000);
+        }, 8000);
+    }
+
+    // Galaxy Explorer Canvas
+    function initGalaxyExplorer() {
+        const canvas = document.getElementById('galaxyCanvas');
+        const ctx = canvas.getContext('2d');
+        let galaxyAnimation;
+        let scale = 1;
+        let rotation = 0;
+        let isRotating = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            drawGalaxy();
+        }
+
+        function drawGalaxy() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const galaxyRadius = Math.min(canvas.width, canvas.height) * 0.4 * scale;
+
+            // Draw galaxy background
+            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, galaxyRadius * 1.5);
+            gradient.addColorStop(0, 'rgba(139, 92, 246, 0.3)');
+            gradient.addColorStop(0.5, 'rgba(25, 25, 112, 0.1)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, galaxyRadius * 1.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw galaxy core
+            const coreGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, galaxyRadius * 0.2);
+            coreGradient.addColorStop(0, 'rgba(255, 255, 200, 1)');
+            coreGradient.addColorStop(1, 'rgba(236, 72, 153, 0.8)');
+
+            ctx.fillStyle = coreGradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, galaxyRadius * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw stars
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+
+            for (let i = 0; i < 2000; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * galaxyRadius;
+
+                // Apply spiral effect
+                const spiralAngle = angle + distance * 0.1;
+
+                const x = Math.cos(spiralAngle) * distance;
+                const y = Math.sin(spiralAngle) * distance;
+
+                // Star size
+                const starSize = Math.random() * 2 + 1;
+
+                // Star color
+                const colorPosition = distance / galaxyRadius;
+                let starColor;
+
+                if (colorPosition < 0.3) {
+                    // Inner: yellow/pink
+                    starColor = `rgba(255, ${200 + Math.random() * 55}, ${150 + Math.random() * 105}, 1)`;
+                } else if (colorPosition < 0.7) {
+                    // Middle: purple/blue
+                    starColor = `rgba(${139 + Math.random() * 50}, ${92 + Math.random() * 50}, ${246 + Math.random() * 9}, 1)`;
+                } else {
+                    // Outer: blue
+                    starColor = `rgba(${50 + Math.random() * 100}, ${100 + Math.random() * 100}, 255, 1)`;
+                }
+
+                ctx.fillStyle = starColor;
+                ctx.beginPath();
+                ctx.arc(x, y, starSize * scale, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Add glow to some stars
+                if (Math.random() > 0.97) {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = starColor;
+                    ctx.beginPath();
+                    ctx.arc(x, y, starSize * 1.5 * scale, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            ctx.restore();
+        }
+
+        function animateGalaxy() {
+            rotation += 0.003;
+            drawGalaxy();
+            galaxyAnimation = requestAnimationFrame(animateGalaxy);
+        }
+
+        // Initialize canvas
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Add control event listeners
+        document.getElementById('zoomIn').addEventListener('click', function() {
+            scale *= 1.2;
+            drawGalaxy();
+        });
+
+        document.getElementById('zoomOut').addEventListener('click', function() {
+            scale /= 1.2;
+            drawGalaxy();
+        });
+
+        document.getElementById('rotate').addEventListener('click', function() {
+            isRotating = !isRotating;
+            if (isRotating) {
+                animateGalaxy();
+            } else {
+                cancelAnimationFrame(galaxyAnimation);
+            }
+        });
+
+        document.getElementById('reset').addEventListener('click', function() {
+            scale = 1;
+            rotation = 0;
+            isRotating = false;
+            cancelAnimationFrame(galaxyAnimation);
+            drawGalaxy();
+        });
+    }
+
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "What is the name of our galaxy?",
+            options: ["Andromeda", "Milky Way", "Triangulum", "Sombrero"],
+            correctAnswer: 1
+        },
+        {
+            question: "Which type of galaxy has a smooth, featureless light distribution?",
+            options: ["Spiral", "Elliptical", "Irregular", "Barred Spiral"],
+            correctAnswer: 1
+        },
+        {
+            question: "Approximately how many stars does the Milky Way contain?",
+            options: ["1-10 million", "1-10 billion", "100-400 billion", "1-10 trillion"],
+            correctAnswer: 2
+        },
+        {
+            question: "What percentage of a galaxy's mass is typically dark matter?",
+            options: ["About 25%", "About 50%", "About 85%", "About 5%"],
+            correctAnswer: 2
+        },
+        {
+            question: "Which galaxy is on a collision course with the Milky Way?",
+            options: ["Triangulum", "Andromeda", "Sombrero", "Whirlpool"],
+            correctAnswer: 1
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function initQuiz() {
+        displayQuestion(currentQuestionIndex);
+    }
+
+    function displayQuestion(index) {
+        const quizContent = document.getElementById('quizContent');
+        const question = quizQuestions[index];
+
+        let html = `
+                <div class="quiz-question">${index + 1}. ${question.question}</div>
+                <div class="quiz-options">
+            `;
+
+        question.options.forEach((option, i) => {
+            html += `<div class="quiz-option" data-index="${i}">${option}</div>`;
+        });
+
+        html += `
+                </div>
+                <div class="quiz-result" id="quizResult"></div>
+                <button class="next-question" id="nextQuestion">Next Question</button>
+            `;
+
+        quizContent.innerHTML = html;
+
+        // Add event listeners to options
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', handleOptionClick);
+        });
+
+        // Add event listener to next button
+        document.getElementById('nextQuestion').addEventListener('click', handleNextQuestion);
+    }
+
+    function handleOptionClick(event) {
+        const selectedIndex = parseInt(event.target.dataset.index);
+        const currentQuestion = quizQuestions[currentQuestionIndex];
+        const options = document.querySelectorAll('.quiz-option');
+        const resultElement = document.getElementById('quizResult');
+        const nextButton = document.getElementById('nextQuestion');
+
+        // Disable all options
+        options.forEach(option => {
+            option.removeEventListener('click', handleOptionClick);
+        });
+
+        // Check if answer is correct
+        if (selectedIndex === currentQuestion.correctAnswer) {
+            event.target.classList.add('correct');
+            resultElement.textContent = "Correct! 🎉";
+            score++;
+        } else {
+            event.target.classList.add('incorrect');
+            options[currentQuestion.correctAnswer].classList.add('correct');
+            resultElement.textContent = "Incorrect. The correct answer is: " + currentQuestion.options[currentQuestion.correctAnswer];
+        }
+
+        // Show next button
+        nextButton.style.display = 'block';
+        nextButton.classList.add('visible');
+    }
+
+    function handleNextQuestion() {
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < quizQuestions.length) {
+            displayQuestion(currentQuestionIndex);
+        } else {
+            // Quiz completed
+            const quizContent = document.getElementById('quizContent');
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+
+            let resultMessage;
+            if (percentage >= 80) {
+                resultMessage = "Excellent! You're a galaxy expert! 🌌";
+            } else if (percentage >= 60) {
+                resultMessage = "Good job! You know quite a bit about galaxies! 🌠";
+            } else {
+                resultMessage = "Keep exploring and learning about our fascinating universe! 🔭";
+            }
+
+            quizContent.innerHTML = `
+                    <h3>Quiz Completed!</h3>
+                    <p>Your score: ${score} out of ${quizQuestions.length} (${percentage}%)</p>
+                    <p>${resultMessage}</p>
+                    <button class="next-question visible" id="restartQuiz">Restart Quiz</button>
+                `;
+
+            document.getElementById('restartQuiz').addEventListener('click', function() {
+                currentQuestionIndex = 0;
+                score = 0;
+                initQuiz();
+            });
+        }
+    }
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        createStars();
+        initGalaxyExplorer();
+        initQuiz();
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                window.scrollTo({
+                    top: targetElement.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>
